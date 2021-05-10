@@ -1,7 +1,6 @@
 import React, { useState } from "react";
-import axios from "axios";
 import { Link } from 'react-router-dom';
-//import { db } from "../../firebase";
+import { db } from "../../firebase";
 //import Data from '../data/apply.json';
 
 const Form = () => {
@@ -14,21 +13,28 @@ const Form = () => {
         evt.preventDefault();
         setStatus('Sending');
 
-        axios.post("localhost:5000/apply-now/sucess", email)
-
-    }
+        db.collection('contacts').add({
+            email:email,
+            tradertype:tradertype,
+        })
+        .then(() => {
+            console.log('Data sent.')
+        })
+        .catch((error) => {
+            setStatus('Error!');
+            console.log(error.message)
+        });
+        setEmail('')
+        setTraderType('')
+        setStatus('Submit')
+        console.log('Input fields wiped.')
+    };
 
     return (
         <form onSubmit={handleSubmit} method='POST'>
-            <div className='flex flex-col'>
-            <select class="appearance-none form-select mt-1 block w-full">
-                <option>$1,000</option>
-                <option>$5,000</option>
-                <option>$10,000</option>
-                <option>$25,000</option>
-            </select>
+            <div className='flex flex-col my-4'>
 
-            <div className='my-1'>
+            <div className='my-1 mb-12'>
                     <label htmlFor="trade-type">
                         What type of trading are you interested in?
                     </label>
@@ -47,7 +53,7 @@ const Form = () => {
                     </div>
                 </div>
 
-                <div className='my-1'>
+                <div className='my-1 mb-12'>
                     <label htmlFor="email">
                         Enter your email
                     </label>
