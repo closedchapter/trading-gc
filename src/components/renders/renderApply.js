@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { Link } from 'react-router-dom';
-import { db } from "../../firebase";
+//import { db } from "../../firebase";
 //import Data from '../data/apply.json';
 
 const Form = () => {
