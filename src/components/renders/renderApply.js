@@ -88,20 +88,20 @@ const Form = () => {
 
                 <div className='my-1 mb-12'>
                     <label htmlFor="email">
-                        Enter your email
+                        Enter your snapchat username
                     </label>
                     <div className="w-full my-1">
                         <input
-                            type="email"
+                            type="text"
                             name="email"
                             id="email"
                             value={email}
                             onChange={e => setEmail(e.target.value)}
                             required
                             className="border py-3 px-4 bg-white rounded-lg placeholder-gray-400 text-gray-900 appearance-none inline-block w-full focus:outline-none focus:ring-2 focus:ring-blue-600"
-                            placeholder="john@example.com"
+                            placeholder="@jane_doe247"
                         />
-                        <div className='text-sm text-gray-500 leading-normal my-1'>Your invitation link will be sent to this email address.</div>
+                        <div className='text-sm text-gray-500 leading-normal my-1'>Your invitation link will be sent to your snapchat.</div>
                     </div>
                 </div>
 
