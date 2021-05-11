@@ -8,7 +8,6 @@ const Render = () => {
         <div>
             <div className='flex flex-col text-lg p-8 min-h-screen'>
                 <div className='text-4xl font-bold leading-normal mb-4'>{Data.T1}</div>
-
                 <div className='my-4'>{Data.P1}</div>
                 <div className='my-4'>{Data.P2}</div>
                 <div className='my-4'>{Data.P3}</div>

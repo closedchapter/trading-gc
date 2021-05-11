@@ -18,8 +18,6 @@ const Render = () => {
                 <div className='mb-4'>{Data.P2}</div>
                 <div className='mb-4'>{Data.H1}</div>
                 <a href={Add} className='mt-12 text-base text-gray-400 whitespace-pre-wrap leading-relax'>{Data.Credit}</a>
-
-                <div></div>
             </div>
         </div>
     )
