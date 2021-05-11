@@ -1,33 +1,66 @@
 import React, { useState } from "react";
-import { Link } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 import { db } from "../../firebase";
 //import Data from '../data/apply.json';
 
 const Form = () => {
+    
+    const history = useHistory();
 
     const [email, setEmail] = useState('');
-    const [tradertype, setTraderType] = useState('');
+    const [message, setMessage] = useState('');
     const [status, setStatus] = useState('Submit');
+
+
+    function getRandomString(length) {
+        var randomChars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+        var result = '';
+        for ( var i = 0; i < length; i++ ) {
+            result += randomChars.charAt(Math.floor(Math.random() * randomChars.length));
+        }
+        return result;
+    }
+
+    const fetchUniqueID = () => {
+        const decimal = (Date.now() / 1000);
+        const removedDecimal = Math.trunc(decimal);
+        const multiplyDecimal = Math.trunc(((decimal - removedDecimal) * 1000))
+        const hexString = multiplyDecimal.toString(16);
+        const randomChars = getRandomString(3);
+        const result = ('#'+hexString+''+multiplyDecimal+''+randomChars+'')
+        return (result)
+    }
+
+    const unique_id = (() => { return(fetchUniqueID());})()
+
+    const location = {
+        pathname: '/success',
+        state: { applyAuth: true, id:unique_id, email:email }
+      }
 
     const handleSubmit = (evt) => {
         evt.preventDefault();
+        
         setStatus('Sending');
-
-        db.collection('contacts').add({
+        
+        db.collection('applicants').add({
             email:email,
-            tradertype:tradertype,
+            message:message,
+            unique_id:unique_id
         })
         .then(() => {
-            console.log('Data sent.')
+            console.log({email, message, unique_id})
+            console.log('Application details were successfully sent.')
+            history.push(location)
         })
         .catch((error) => {
             setStatus('Error!');
             console.log(error.message)
         });
         setEmail('')
-        setTraderType('')
+        setMessage('')
         setStatus('Submit')
-        console.log('Input fields wiped.')
+        console.log('Input fields were successfully wiped.')
     };
 
     return (
@@ -43,8 +76,8 @@ const Form = () => {
                             type="text"
                             name="trade-type"
                             id="trade-type"
-                            value={tradertype}
-                            onChange={e => setTraderType(e.target.value)}
+                            value={message}
+                            onChange={e => setMessage(e.target.value)}
                             required
                             className="border py-3 px-4 bg-white rounded-lg placeholder-gray-400 text-gray-900 appearance-none inline-block w-full focus:outline-none focus:ring-2 focus:ring-blue-600"
                             placeholder="I am interested in stocks"
