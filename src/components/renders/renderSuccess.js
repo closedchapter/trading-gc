@@ -7,7 +7,7 @@ const Render = () => {
     return (
         <div>
             <div className='flex flex-col justify-start text-lg p-8 min-h'>
-                <div className='text-4xl font-bold leading-normal mb-4'>thanks for joining!</div>
+                <div className='text-4xl font-bold leading-normal mb-4'>thanks for joining!🤩</div>
                 <div className='mb-4'>After your application is reviewed you will recieve a message to your snapchat account <b>{history.location.state.email}</b> with an invite link which you can use to join the groupchat.</div>
                 <div className='mb-4'>Your unique ID number is <b>{history.location.state.id}</b>.</div>
                 <Link to="/" className='cursor-pointer bg-black text-white text-center rounded-lg w-full py-3 px-4 mt-12 mb-4'>Continue</Link>

@@ -69,7 +69,7 @@ const Form = () => {
 
             <div className='my-1 mb-12'>
                     <label htmlFor="trade-type">
-                        What type of trading are you interested in?
+                        What type of trading are you interested in? 🤔💭
                     </label>
                     <div className="w-full my-1">
                         <input
@@ -88,7 +88,7 @@ const Form = () => {
 
                 <div className='my-1 mb-12'>
                     <label htmlFor="email">
-                        Enter your snapchat username
+                        Enter your snapchat username🤳
                     </label>
                     <div className="w-full my-1">
                         <input
@@ -117,7 +117,7 @@ const Render = () => {
         <div>
             <div className='flex flex-col text-lg p-8 min-h-screen'>
             <Link to="/" className='cursor-pointer my-2 underline text-blue-600 hover:text-blue-800 underline visited:text-purple-600'>back to homepage</Link>
-                <div className='text-4xl font-bold leading-normal my-4'>tell us about you</div>
+                <div className='text-4xl font-bold leading-normal my-4'>tell us about you😄</div>
                 <Form />
             </div>
         </div>
