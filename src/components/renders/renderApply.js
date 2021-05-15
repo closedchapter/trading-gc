@@ -1,112 +1,63 @@
 import React, { useState } from "react";
-import { Link, useHistory } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { db } from "../../firebase";
-//import Data from '../data/apply.json';
 
-const Form = () => {
-    
-    const history = useHistory();
+const CreatePost = () => {
 
-    const [email, setEmail] = useState('');
+    const [author, setAuthor] = useState('');
     const [message, setMessage] = useState('');
-    const [status, setStatus] = useState('Submit');
+    const [direction, setDirection] = useState('');
+    const [status, setStatus] = useState('Publish');
 
-
-    function getRandomString(length) {
-        var randomChars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-        var result = '';
-        for ( var i = 0; i < length; i++ ) {
-            result += randomChars.charAt(Math.floor(Math.random() * randomChars.length));
-        }
-        return result;
-    }
-
-    const fetchUniqueID = () => {
-        const decimal = (Date.now() / 1000);
-        const removedDecimal = Math.trunc(decimal);
-        const multiplyDecimal = Math.trunc(((decimal - removedDecimal) * 1000))
-        const hexString = multiplyDecimal.toString(16);
-        const randomChars = getRandomString(3);
-        const result = ('#'+hexString+''+multiplyDecimal+''+randomChars+'')
-        return (result)
-    }
-
-    const unique_id = (() => { return(fetchUniqueID());})()
-
-    const location = {
-        pathname: '/success',
-        state: { applyAuth: true, id:unique_id, email:email }
-      }
+    const data = {
+        direction: direction,
+        message: message, 
+        author: author,
+        uid: new Date().getTime()
+    };
 
     const handleSubmit = (evt) => {
         evt.preventDefault();
         
-        setStatus('Sending');
+        setStatus('Submitting');
         
-        db.collection('applicants').add({
-            email:email,
-            message:message,
-            unique_id:unique_id
-        })
+        db.collection("posts")
+        .doc(data.uid.toString())
+        .set(data)
         .then(() => {
-            console.log({email, message, unique_id})
-            console.log('Application details were successfully sent.')
-            history.push(location)
-        })
-        .catch((error) => {
-            setStatus('Error!');
-            console.log(error.message)
-        });
-        setEmail('')
-        setMessage('')
-        setStatus('Submit')
-        console.log('Input fields were successfully wiped.')
-    };
+            console.log("A new post has been published", "Success");
+            window.location('./')
+          })
+          .catch(error => {
+            console.log(error.message, "Publish post failed");
+          });
+      };
 
     return (
-        <form onSubmit={handleSubmit} method='POST'>
-            <div className='flex flex-col my-4'>
+        <form onSubmit={handleSubmit}>
 
-            <div className='my-1 mb-12'>
-                    <label htmlFor="trade-type">
-                        What type of trading are you interested in? 🤔💭
-                    </label>
-                    <div className="w-full my-1">
-                        <input
-                            type="text"
-                            name="trade-type"
-                            id="trade-type"
-                            value={message}
-                            onChange={e => setMessage(e.target.value)}
-                            required
-                            className="border py-3 px-4 bg-white rounded-lg placeholder-gray-400 text-gray-900 appearance-none inline-block w-full focus:outline-none focus:ring-2 focus:ring-blue-600"
-                            placeholder="I am interested in stocks"
-                        />
-                        <div className='text-sm text-gray-500 leading-normal my-1'>We accept all types of investors & traders.</div>
-                    </div>
+            <div className='mb-8'> 
+                <label>Type in here</label>
+                <div className="w-full">
+                    <input type="text" value={message} onChange={e => setMessage(e.target.value)} required placeholder="..."
+                        className="border py-3 px-4 bg-white rounded-lg placeholder-gray-400 text-gray-900 appearance-none inline-block w-full focus:outline-none focus:ring-2 focus:ring-blue-600"
+                    />
+                    <div className='text-sm text-gray-500 leading-normal'>Keep it short.</div>
                 </div>
-
-                <div className='my-1 mb-12'>
-                    <label htmlFor="email">
-                        Enter your snapchat username🤳
-                    </label>
-                    <div className="w-full my-1">
-                        <input
-                            type="text"
-                            name="email"
-                            id="email"
-                            value={email}
-                            onChange={e => setEmail(e.target.value)}
-                            required
-                            className="border py-3 px-4 bg-white rounded-lg placeholder-gray-400 text-gray-900 appearance-none inline-block w-full focus:outline-none focus:ring-2 focus:ring-blue-600"
-                            placeholder="@jane_doe247"
-                        />
-                        <div className='text-sm text-gray-500 leading-normal my-1'>Your invitation link will be sent to your snapchat.</div>
-                    </div>
-                </div>
-
-                <button className='cursor-pointer bg-black text-white text-center rounded-lg mt-5 mb-10 w-full py-3 px-4'>{status}</button>
             </div>
+
+            <div className='mb-8'> 
+                <label>Enter your snapchat username</label>
+                <div className="w-full">
+                    <input type="text" value={author} onChange={e => setAuthor(e.target.value)} required placeholder="..."
+                        className="border py-3 px-4 bg-white rounded-lg placeholder-gray-400 text-gray-900 appearance-none inline-block w-full focus:outline-none focus:ring-2 focus:ring-blue-600"
+                    />
+                    <div className='text-sm text-gray-500 leading-normal'>Your username will be visible on your post.</div>
+                </div>
+            </div>
+
+
+            <button className='font-semibold cursor-pointer bg-black text-white text-center rounded-lg mt-5 mb-10 w-full py-3 px-4'>{status}</button>
         </form>
     )
   }
@@ -114,16 +65,12 @@ const Form = () => {
 const Render = () => {
 
     return (
-        <div>
-            <div className='flex flex-col text-lg p-8 min-h-screen'>
-            <Link to="/" className='cursor-pointer my-2 underline text-blue-600 hover:text-blue-800 underline visited:text-purple-600'>back to homepage</Link>
-                <div className='text-4xl font-bold leading-normal my-4'>tell us about you😄</div>
-                <Form />
-            </div>
+        <div className='p-8 text-lg font-medium'>
+            <div className='mb-8'><Link to="/" className='cursor-pointer underline text-blue-600 hover:text-blue-800 underline visited:text-purple-600'>back to homepage</Link></div>
+            <div className='mb-8 text-4xl font-bold'>Create your own post</div>
+            <CreatePost />
         </div>
     )
 }
 
 export default Render
-
-//<div className='mb-4'>Due to a high number of applications we have switched to an invite-only process. <Link to="/about-us" className='cursor-pointer mb-4 underline text-blue-600 hover:text-blue-800 underline visited:text-purple-600'>You can read more about it here</Link></div>
