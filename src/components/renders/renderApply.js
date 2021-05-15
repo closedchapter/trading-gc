@@ -1,8 +1,10 @@
 import React, { useState } from "react";
-import { Link } from 'react-router-dom';
+import { Link, useHistory } from "react-router-dom";
 import { db } from "../../firebase";
 
 const CreatePost = () => {
+
+    const history = useHistory()
 
     const [author, setAuthor] = useState('');
     const [message, setMessage] = useState('');
@@ -26,7 +28,7 @@ const CreatePost = () => {
         .set(data)
         .then(() => {
             console.log("A new post has been published", "Success");
-            window.location('./')
+            history.push('./')
           })
           .catch(error => {
             console.log(error.message, "Publish post failed");

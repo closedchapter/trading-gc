@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { db } from "../../firebase";
 
-const DropDown = () => {
+const DropDown = (uid) => {
     const [open, setOpen] = useState(false);
     const drop = useRef(null);
 
@@ -10,10 +10,42 @@ const DropDown = () => {
           setOpen(false);
         }
       }
+    
+    /*const handleDelete = () => {
+        const id = uid.uid.toString()
+        console.log(id)
+        db.collection('post')
+        .doc(id)
+        .delete()
+        .then(() => {
+            console.log("Document successfully deleted!");
+            window.location.reload();
+        }).catch((error) => {
+            console.error("Error removing document: ", error);
+        });
+    }*/
+
+    const handleDelete = () => {
+        const id = uid.uid
+        db.collection("posts")
+        .where('uid', "==", id)
+        .get()
+        .then( (querySnapshot) => {
+            console.log(querySnapshot.docs[0].ref)
+            querySnapshot.docs[0].ref.delete()
+            console.log("Document successfully deleted!")
+        }).catch((error) => {
+            console.error("Error removing document: ", error);
+        });
+    }
 
     const Modal = () => {
             return (
-                <div className={'bg-green-400 p-5'}></div>
+                <div className={'absolute flex flex-col text-center ring-1 ring-gray-300 text-black bg-white rounded-xl right-6 text-base'}>
+                    <div className='cursor-pointer p-1 px-4 py-3 rounded-lg hover:bg-gray-100 m-2'>Update</div>
+                    <div className='border-b broder-gray-200'></div>
+                    <div className='cursor-pointer p-1 px-4 py-3 rounded-lg hover:bg-gray-100 m-2' onClick={() => handleDelete()}>Delete</div>
+                </div>
             );
     }
 
@@ -24,32 +56,44 @@ const DropDown = () => {
         };
     });
 
+
     return(
-        <div ref={drop} className='dropdown'>
-            <button className='ml-auto hover:text-black hover:bg-gray-100 rounded px-3 -mr-2' onClick={() => setOpen(open => !open)}><svg class="w-6 h-6 my-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z"></path></svg></button>
-            {open && <Modal setOpen={open} ref={drop}/>}
+        <div ref={drop} className='ml-auto'>
+            <button className='hover:text-black hover:bg-gray-100 rounded px-3 -mr-2' onClick={() => setOpen(open => !open)}><svg class="w-6 h-6 my-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z"></path></svg></button>
+            {open && <Modal uid={uid}/>}
         </div>
     );
 }
 
-const Render = () => {
+
+
+    const Render = () => {
 
     const [data, setData] = useState();
 
     useEffect(() => {
-        db.collection("posts")
-        .get()
-        .then(querySnapshot => {
-            const data = querySnapshot.docs.map(doc => doc.data());
-            setData(data);
-        });
+        const update = db
+            .collection("posts")
+            .orderBy("uid", "desc")
+            /*
+            .get()
+            .then(querySnapshot => {
+                const data = querySnapshot.docs.map(doc => doc.data());
+                setData(data);
+            */
+            .onSnapshot(documentSnapshot => {
+                const data = documentSnapshot.docs.map(doc => doc.data());
+                console.log(data)
+                setData(data);
+            });
+        return () => update();
     }, []);
 
     const item = data?.map((data) =>
         <div key={data.uid} className='bg-white rounded-2xl ring-1 ring-gray-300 py-2 px-4 mb-4'>
             <div className='inline-flex text-gray-400 w-full'>
                 <div className='my-2 text-base'>@{data.author}</div>
-                <DropDown />
+                <DropDown uid={data.uid}/>
             </div>
             <div className='my-2'>{data.message}</div>
         </div>
