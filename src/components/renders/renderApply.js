@@ -6,11 +6,11 @@ const CreatePost = () => {
 
     const [author, setAuthor] = useState('');
     const [message, setMessage] = useState('');
-    const [direction, setDirection] = useState('');
+    // const [direction, setDirection] = useState('');
     const [status, setStatus] = useState('Publish');
 
     const data = {
-        direction: direction,
+        // direction: direction,
         message: message, 
         author: author,
         uid: new Date().getTime()

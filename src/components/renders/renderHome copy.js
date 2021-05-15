@@ -1,6 +1,6 @@
 import React from "react";
 import { Link } from 'react-router-dom';
-import { db } from "../../firebase";
+// import { db } from "../../firebase";
 import Data from '../data/home.json';
 
 /* const RenderCards = () => {
