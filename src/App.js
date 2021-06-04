@@ -1,20 +1,24 @@
 import React from 'react';
 import { Switch, Route } from 'react-router-dom';
-import Home from './pages';
-import Apply from './pages/Apply';
-import Success from './pages/Success';
-import About from './pages/About';
+
+import Nav from './components/nav'
+import Footer from './components/footer'
+
+import GenerateTrendingJSON from './api'
+import Home from './pages/home'
 
 
 function App() {
+  let TrendingJSON = GenerateTrendingJSON()
   return (
     <>
+    <Nav />
       <Switch>
-        <Route path='/' exact component={Home} />
-        <Route path='/apply-now' exact component={Apply} />
-        <Route path='/about-us' exact component={About} />
-        <Route path='/success' exact component={Success} />
+        <Route path='/'>
+          <Home TrendingJSON={TrendingJSON} />
+        </Route>
       </Switch>
+    <Footer />
     </>
   );
 }
